@@ -51,7 +51,11 @@ public class TicTacToe {
 		count=0;
 	}
 	private static String showMenu() {
-		System.out.println("====This is Tic Tac Toe Console Game======"); 	
+		System.out.println("====This is Tic Tac Toe Console Game======");
+		System.out.println("|   How to play                           |");
+		System.out.println("|   Human:1 O (capital letter O)          |");
+		System.out.println("|   Machine: Automatic                    |");
+		System.out.println("=========================================="); 	
 		System.out.println("Please input 1 or 2:"); 
 		System.out.println("1) You - O"); 
 		System.out.println("2) Machine - X");
@@ -121,13 +125,13 @@ private static String humanPlay() {
 		System.out.println("Your turn:");	
 		position = input.next();
 		choice = input.next();
-		
 		if(!choice.equals("O")) {
 			System.out.println("Please input correctly.");
 			System.out.println("Your choice is: O, Machine choice is:X");
 		}
 		else if(decisionArray[Integer.valueOf(position).intValue()] == 0)
 			System.out.println("This position already taken. Please input correct position:");
+		
 		else break;
 	}while(true);	
 	
