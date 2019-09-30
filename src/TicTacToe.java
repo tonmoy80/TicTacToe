@@ -17,7 +17,6 @@ public class TicTacToe {
 	static int ticTacToeStatus[][]= {{0,0,0},{0,0,0},{0,0,0}};
 	static int decisionArray[]= {0,1,2,3,4,5,6,7,8,9};
 	static int moves[]= {1,2,1,2,1,2,1,2,1,2};
-		
 	static int count=0;
 	static Scanner input=new Scanner(System.in);	
 	public static void main(String[] args) throws IOException {
@@ -51,7 +50,11 @@ public class TicTacToe {
 		count=0;
 	}
 	private static String showMenu() {
-		System.out.println("====This is Tic Tac Toe Console Game======"); 	
+		System.out.println("====This is Tic Tac Toe Console Game======");
+		System.out.println("|   How to play                           |");
+		System.out.println("|   Human:1 O (capital letter O)          |");
+		System.out.println("|   Machine: Automatic                    |");
+		System.out.println("=========================================="); 	
 		System.out.println("Please input 1 or 2:"); 
 		System.out.println("1) You - O"); 
 		System.out.println("2) Machine - X");
@@ -64,10 +67,8 @@ public class TicTacToe {
 		int turn = 0;    
 		String choice="";
 		String whoStarts="";
-		
 		initVariables();
 		whoStarts=showMenu();
-		
         switch(whoStarts) {
         case "1":
         			// when human start first
@@ -107,21 +108,16 @@ public class TicTacToe {
 	}
 
 private static String play(int mode) {
-	
-	if(mode==1)
-		choice = humanPlay();
-	if(mode==2)
-		choice = machinePlay();
+	if(mode==1) choice = humanPlay();
+	if(mode==2) choice = machinePlay();
 	return choice;
 }
 private static String humanPlay() {
-		
 	do
 	{
 		System.out.println("Your turn:");	
 		position = input.next();
 		choice = input.next();
-		
 		if(!choice.equals("O")) {
 			System.out.println("Please input correctly.");
 			System.out.println("Your choice is: O, Machine choice is:X");
@@ -130,7 +126,6 @@ private static String humanPlay() {
 			System.out.println("This position already taken. Please input correct position:");
 		else break;
 	}while(true);	
-	
 	changeTicTagToeA(position,choice);
 	decisionArray[Integer.valueOf(position).intValue()]=0;
 	return choice;
@@ -140,17 +135,19 @@ private static String machinePlay() {
 	
 	String choice = "X";
 	System.out.println("Machine is thinking...");
-	
-	// firstly check when machine can win. This function returns value between 1-9
-	//position = getMachineWinPosition();
+	// firstly check when machine can win.
 	position = getMachinePositionTest(2);
 	if(Integer.valueOf(position).intValue()==0) {
 		// secondly check when machine can block opponent - O-O-X
 		position = getMachinePositionTest(1);
 		if(Integer.valueOf(position).intValue()==0)
-			//  it means we don't get win or block situation. chose random
-			position = getUniquePositionForMachine(position);
-	}	
+			
+			position = getBestPossibleMoves();
+			if(Integer.valueOf(position).intValue()==0) {
+				//  it means we don't get win or block situation. chose random
+				position = getUniquePositionForMachine(position);
+			}
+	}
 	try {
 		Thread.sleep(3000);
 	} catch (InterruptedException e) {
@@ -232,7 +229,6 @@ public static int checkGameStatus(String choice){
 }
 //get position to win when machine has X-X-X chance
 private static String getMachinePositionTest(int player) {
-	
 	int row = 0; 
 	int col = 0;
 	int pos = 0;
@@ -266,5 +262,109 @@ private static String getMachinePositionTest(int player) {
 	return Integer.toString(pos);
 }
 
+private static String getBestPossibleMoves() {
+	int count = 0;
+	// For Position 1, checking 1,2,3 / 1,4,7 / 1,5,9
+	if(ticTacToeStatus[0][0]==0) {
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[0][1]+ticTacToeStatus[0][2]==2)
+			count++;
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[1][1]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[1][0]+ticTacToeStatus[2][0]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 1");
+			return "1";
+		}
+	}
+	// For Position 2, checking 1,2,3 / 2,5,8
+	count = 0;
+	if(ticTacToeStatus[0][1]==0) {
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[0][1]+ticTacToeStatus[0][2]==2)
+			count++;
+		if(ticTacToeStatus[0][1]+ticTacToeStatus[1][1]+ticTacToeStatus[2][1]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 2");
+			return "2";
+		}
+	}
+	// For Position 3
+	count = 0;
+	if(ticTacToeStatus[0][2]==0) {
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[0][1]+ticTacToeStatus[0][2]==2)
+			count++;
+		if(ticTacToeStatus[0][2]+ticTacToeStatus[1][2]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 3");
+			return "3";
+		}
+	}
+	// For Position 4
+	count = 0;
+	if(ticTacToeStatus[1][0]==0) {
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[1][0]+ticTacToeStatus[2][0]==2)
+			count++;
+		if(ticTacToeStatus[1][0]+ticTacToeStatus[1][1]+ticTacToeStatus[1][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 4");
+			return "4";
+		}
+	}
+	// For Position 6
+	count = 0;
+	if(ticTacToeStatus[1][2]==0) {
+		if(ticTacToeStatus[0][2]+ticTacToeStatus[1][2]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(ticTacToeStatus[1][0]+ticTacToeStatus[1][1]+ticTacToeStatus[1][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 6");
+			return "6";
+		}
+	}
+	// For Position 7
+	count = 0;
+	if(ticTacToeStatus[2][0]==0) {
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[1][0]+ticTacToeStatus[2][0]==2)
+			count++;
+		if(ticTacToeStatus[2][0]+ticTacToeStatus[2][1]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(ticTacToeStatus[2][0]+ticTacToeStatus[1][1]+ticTacToeStatus[0][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 7");
+			return "7";
+		}	
+	}
+	// For Position 8
+	count = 0;
+	if(ticTacToeStatus[2][0]==0) {
+		if(ticTacToeStatus[0][1]+ticTacToeStatus[1][1]+ticTacToeStatus[2][1]==2)
+			count++;
+		if(ticTacToeStatus[2][0]+ticTacToeStatus[2][1]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 8");
+			return "8";
+		}
+	}
+	// For Position 9
+	count = 0;
+	if(ticTacToeStatus[2][2]==0) {
+		if(ticTacToeStatus[0][2]+ticTacToeStatus[1][2]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(ticTacToeStatus[2][0]+ticTacToeStatus[2][1]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(ticTacToeStatus[0][0]+ticTacToeStatus[1][1]+ticTacToeStatus[2][2]==2)
+			count++;
+		if(count==2) {
+			System.out.println("getBestPossibleMoves: 9");
+			return "9";
+		}
+	}
+	return "0";
 }
-
+}
